@@ -4,17 +4,17 @@
 // ignore: avoid_web_libraries_in_flutter
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:html' as html;
+import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-import 'foloosi_pass_platform_interface.dart';
+import 'core/foloosi_pass_platform_interface.dart';
 
 /// A web implementation of the FoloosiPassPlatform of the FoloosiPass plugin.
 class FoloosiPassWeb extends FoloosiPassPlatform {
-  /// Constructs a UaePassWeb
+  /// Constructs a FoloosiPassWeb
   FoloosiPassWeb();
 
   static void registerWith(Registrar registrar) {

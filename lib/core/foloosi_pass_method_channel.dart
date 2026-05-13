@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 
 import 'foloosi_pass_platform_interface.dart';
 
-/// An implementation of [FoloosiPassPlatform] that uses method channels.
-class MethodChannelFoloosiPass extends FoloosiPassPlatform {
+/// An implementation of [UaePassPlatform] that uses method channels.
+class MethodChannelUaePass extends FoloosiPassPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
-  final methodChannel = const MethodChannel('uae_pass');
+  final methodChannel = const MethodChannel('foloosi_pass');
 
   @override
   Future<void> setUp({

@@ -1,26 +1,19 @@
-import 'foloosi_pass_platform_interface.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-
-import 'profile_data.dart';
+import 'core/foloosi_pass_platform_interface.dart';
+import 'model/profile_data.dart';
+export 'core/export.dart';
+export 'model/export.dart';
 
 class FoloosiPass {
   Future<void> setUpSandbox({String language = "en"}) async {
     FoloosiPassPlatform.instance.setUp(
-      // clientId: "sandbox_stage",
-      // clientSecret: "sandbox_stage",
-      // isProduction: false,
-      // urlScheme: "uaepassdemoappDS",
-      // state: "123123213",
-      // redirectUri: "https://oauthtest.com/authorization/return",
-      // scope: "urn:uae:digitalid:profile",
-      // language: language,
-      clientId: "foloosi_mob_stage",
-      clientSecret: "QL4Wd6oqwzMVCV1",
+      clientId: "sandbox_stage",
+      clientSecret: "sandbox_stage",
       isProduction: false,
-      urlScheme: "foloosi",
-      state: "Foloosi@123",
-      redirectUri: "https://promo.foloosi.com/auth/callback/mobile",
+      urlScheme: "uaepassdemoappDS",
+      state: "123123213",
+      redirectUri: "https://oauthtest.com/authorization/return",
       scope: "urn:uae:digitalid:profile",
       language: language,
     );
@@ -30,7 +23,7 @@ class FoloosiPass {
     required String clientId,
     required String clientSecret,
     required String urlScheme,
-    String state = "Foloosi@1234",
+    String state = "HnlHOJTkTb66Y5H",
     bool isProduction = false,
     String redirectUri = "https://oauthtest.com/authorization/return",
     String scope = "urn:uae:digitalid:profile",

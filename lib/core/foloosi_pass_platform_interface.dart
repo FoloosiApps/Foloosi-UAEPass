@@ -3,12 +3,12 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'foloosi_pass_method_channel.dart';
 
 abstract class FoloosiPassPlatform extends PlatformInterface {
-  /// Constructs a UaePassPlatform.
+  /// Constructs a FoloosiPassPlatform.
   FoloosiPassPlatform() : super(token: _token);
 
   static final Object _token = Object();
 
-  static FoloosiPassPlatform _instance = MethodChannelFoloosiPass();
+  static FoloosiPassPlatform _instance = MethodChannelUaePass();
 
   /// The default instance of [FoloosiPassPlatform] to use.
   ///

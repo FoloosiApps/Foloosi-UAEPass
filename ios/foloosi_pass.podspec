@@ -1,4 +1,4 @@
-    #
+#
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
 # Run `pod lib lint foloosi_pass.podspec` to validate before publishing.
 #
@@ -13,10 +13,14 @@ A new Flutter project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'Classes/**/*.{swift,h,m}'
   s.dependency 'Flutter'
-  s.dependency 'ZIPFoundation', '~> 0.9'
+  s.resources = 'Classes/**/*.xib'
+  # Network
+  s.dependency 'Alamofire', '5.4.4'
+  s.dependency 'ZIPFoundation', '0.9.19'
   s.platform = :ios, '15.0'
+
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

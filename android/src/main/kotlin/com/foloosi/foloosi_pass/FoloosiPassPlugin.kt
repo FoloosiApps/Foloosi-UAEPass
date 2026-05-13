@@ -2,7 +2,6 @@ package com.foloosi.foloosi_pass
 
 import ae.sdg.libraryuaepass.*
 import ae.sdg.libraryuaepass.UAEPassController.getAccessCode
-import ae.sdg.libraryuaepass.UAEPassController.setAccessToken
 import ae.sdg.libraryuaepass.UAEPassController.resume
 import ae.sdg.libraryuaepass.UAEPassController.getUserProfile
 import ae.sdg.libraryuaepass.business.profile.model.ProfileModel
@@ -30,12 +29,16 @@ import ae.sdg.libraryuaepass.utils.Utils.generateRandomString
 import com.google.gson.Gson
 
 /** FoloosiPassPlugin */
-class FoloosiPassPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
+class FoloosiPassPlugin :
+    FlutterPlugin,
+    MethodCallHandler, ActivityAware,
     PluginRegistry.NewIntentListener {
-
+    // The MethodChannel that will the communication between Flutter and native Android
+    //
+    // This local reference serves to register the plugin with the Flutter Engine and unregister it
+    // when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
     private lateinit var requestModel: UAEPassAccessTokenRequestModel
-
     private var client_id: String? = null
     private var client_secret: String? = null
     private var redirect_url: String? = "https://oauthtest.com/authorization/return"
@@ -46,20 +49,16 @@ class FoloosiPassPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
     private var successHost: String? = null
     private var scope: String? = "urn:uae:digitalid:profile"
     private var language: String? = "en"
-
     private val UAE_PASS_PACKAGE_ID = "ae.uaepass.mainapp"
     private val UAE_PASS_QA_PACKAGE_ID = "ae.uaepass.mainapp.qa"
     private val UAE_PASS_STG_PACKAGE_ID = "ae.uaepass.mainapp.stg"
-
     private val DOCUMENT_SIGNING_SCOPE = "urn:safelayer:eidas:sign:process:document"
     private val RESPONSE_TYPE = "code"
     private val SCOPE = "urn:uae:digitalid:profile"
     private val ACR_VALUES_MOBILE = "urn:digitalid:authentication:flow:mobileondevice"
     private val ACR_VALUES_WEB = "urn:safelayer:tws:policies:authentication:level:low"
-
     private var activity: Activity? = null
     private lateinit var result: Result
-
 
     override fun onAttachedToActivity(@NonNull binding: ActivityPluginBinding) {
         if (activity == null)
@@ -80,11 +79,13 @@ class FoloosiPassPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         activity = null
     }
 
-
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "uae_pass")
+    override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, "foloosi_pass")
         channel.setMethodCallHandler(this)
+    }
 
+    override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
@@ -125,40 +126,41 @@ class FoloosiPassPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
         } else if (call.method == "sign_in") {
             /** Login with UAE Pass and get the access Code. */
             requestModel = getAuthenticationRequestModel(activity!!)
-            getAccessCode(activity!!, requestModel, object : UAEPassAccessCodeCallback {
+
+            UAEPassController.getAccessCode(activity!!, requestModel, object : UAEPassAccessCodeCallback {
                 override fun getAccessCode(accessCode: String?, state: String, error: String?) {
                     if (error != null) {
-                        result.error("ERROR", error, null)
+                        result.error("ERROR", error, null);
                     } else {
                         result.success(accessCode)
                     }
                 }
             })
-        } else if (call.method == "access_token") {
-            val code = call.argument<String>("code")
-            if (code.isNullOrEmpty()) {
-                result.error("ERROR", "Missing 'code' argument", null)
-            } else {
-                requestModel = getAuthenticationRequestModel(activity!!)
-                setAccessToken(activity!!, requestModel, code, object : UAEPassAccessTokenCallback {
-                    override fun getToken(accessToken: String?, state: String, error: String?) {
-                        if (error != null) {
-                            result.error("ERROR", error, null)
-                        } else {
-                            result.success(accessToken)
-                        }
+
+        }
+        else if (call.method == "access_token") {
+            requestModel = getAuthenticationRequestModel(activity!!)
+
+            UAEPassController.getAccessCode(activity!!, requestModel, object : UAEPassAccessCodeCallback {
+                override fun getAccessCode(accessCode: String?, state: String, error: String?) {
+                    if (error != null) {
+                        result.error("ERROR", error, null);
+                    } else {
+                        result.success(accessCode)
                     }
-                })
-            }
-        } else if (call.method == "profile") {
+                }
+            })
+
+        }
+        else if (call.method == "profile") {
             val requestModel = getProfileRequestModel(activity!!)
 
             Log.d("TAG", "profile ${Gson().toJson(requestModel)}")
-            getUserProfile(activity!!, requestModel, object : UAEPassProfileCallback {
+
+            UAEPassController.getUserProfile(activity!!, requestModel, object : UAEPassProfileCallback {
                 override fun getProfile(profileModel: ProfileModel?, error: String?) {
-                    Log.d("TAG", "error $error")
                     if (error != null) {
-                        result.error("ERROR", error, null)
+                        result.error("ERROR", error, null);
                     } else {
                         val gson = Gson()
                         val profileJson = gson.toJson(profileModel)
@@ -166,6 +168,7 @@ class FoloosiPassPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                     }
                 }
             })
+
         } else {
             result.notImplemented()
         }
@@ -183,10 +186,6 @@ class FoloosiPassPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
                 resume(intent.dataString)
             }
         }
-    }
-
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
     }
 
     private fun isPackageInstalled(packageManager: PackageManager): Boolean {
@@ -254,8 +253,9 @@ class FoloosiPassPlugin : FlutterPlugin, MethodCallHandler, ActivityAware,
             Language.EN
         }
         return UAEPassProfileRequestModel(
-            environment,
+            environment!!,
             client_id!!,
+//            client_secret!!,
             scheme!!,
             failureHost!!,
             successHost!!,

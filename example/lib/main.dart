@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:foloosi_pass/foloosi_pass.dart';
-import 'package:foloosi_pass/profile_data.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,6 +17,7 @@ class _MyAppState extends State<MyApp> {
   String? authCode;
   String? accessToken;
   ProfileData? profileData;
+  String? errorMessage;
 
   final _uaePass = FoloosiPass();
 
@@ -48,15 +48,24 @@ class _MyAppState extends State<MyApp> {
                 child: const Text('Sign in with UAE Pass'),
               ),
               const SizedBox(height: 100),
+              if (errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    'Error: $errorMessage',
+                    style: const TextStyle(color: Colors.red),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               if (authCode != null)
                 ListTile(
                   title: const Text('Auth Code'),
-                  subtitle: Text('${authCode?.substring(0, 6)}............'),
+                  subtitle: SelectableText(authCode!),
                 ),
               if (accessToken != null)
                 ListTile(
                   title: const Text('Access Token'),
-                  subtitle: Text('${accessToken?.substring(0, 6)}............'),
+                  subtitle: SelectableText(accessToken!),
                 ),
               if (profileData != null)
                 Column(
@@ -94,18 +103,21 @@ class _MyAppState extends State<MyApp> {
     authCode = null;
     accessToken = null;
     profileData = null;
+    errorMessage = null;
     setState(() {});
     try {
       authCode = await _uaePass.signIn();
+      setState(() {});
       accessToken = await _uaePass.getAccessToken(authCode ?? "");
+      setState(() {});
       profileData = await _uaePass.getProfile(accessToken ?? "");
-
       setState(() {});
     } catch (e) {
+      errorMessage = e.toString();
       if (kDebugMode) {
         print(e.toString());
       }
+      setState(() {});
     }
-    setState(() {});
   }
 }

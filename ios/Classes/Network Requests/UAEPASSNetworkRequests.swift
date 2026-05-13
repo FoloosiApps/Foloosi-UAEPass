@@ -31,8 +31,8 @@ public enum ESignType: String {
         var request = URLRequest(url: serviceUrl)
         request.httpMethod = "POST"
         let authUser = UAEPASSRouter.shared.environmentConfig.clientID
-        let authPass = UAEPASSRouter.shared.environmentConfig.clientSecret
-        let authStr = "\(authUser):\(authPass)"
+        
+        let authStr = "\(authUser):sandbox_stage"
         let authData = authStr.data(using: .ascii)!
         let authValue = "Basic \(authData.base64EncodedString(options: []))"
         request.setValue(authValue, forHTTPHeaderField: "Authorization")

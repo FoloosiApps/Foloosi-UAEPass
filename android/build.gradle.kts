@@ -14,12 +14,14 @@ buildscript {
     }
 }
 
+val foloosiPassAarRepo = file("libs/m2")
+
 allprojects {
     repositories {
         google()
         mavenCentral()
-        flatDir {
-            dirs("libs")
+        maven {
+            url = foloosiPassAarRepo.toURI()
         }
     }
 }
@@ -40,7 +42,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        jvmTarget = "17"
     }
 
     sourceSets {
@@ -73,13 +75,9 @@ android {
     }
 }
 
-
 dependencies {
+    implementation("ae.sdg.libraryuaepass:uae-pass-library:1.0.0@aar")
 
-    // The vendor AAR cannot be embedded inside the plugin's own AAR (AGP 8 forbids
-    // local-file AAR deps in library modules). Consumers must add the AAR to their
-    // own app/libs and declare it themselves — see example/android/app/build.gradle.kts.
-    compileOnly(files("libs/uaepassandroid.aar"))
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")

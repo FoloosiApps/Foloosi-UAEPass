@@ -42,10 +42,3 @@ android {
 flutter {
     source = "../.."
 }
-
-dependencies {
-    // The foloosi_pass plugin compiles against this AAR but cannot embed it (AGP 8
-    // disallows local-file AAR deps in library modules), so the consuming app links
-    // it at runtime.
-    implementation(files("libs/uaepassandroid.aar"))
-}

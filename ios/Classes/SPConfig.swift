@@ -18,11 +18,11 @@ import UIKit
     var failSchemeURL: String
 
     @objc public required init(redirectUriLogin: String,
-                               scope: String,
-                               state: String,
-                               successSchemeURL: String,
-                               failSchemeURL: String,
-                               signingScope: String? = nil) {
+    scope: String,
+    state: String,
+    successSchemeURL: String,
+    failSchemeURL: String,
+    signingScope: String? = nil) {
         self.redirectUriLogin = redirectUriLogin
         self.loginScope = scope
         self.signScope = signingScope
