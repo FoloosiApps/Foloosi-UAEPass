@@ -11,6 +11,9 @@ public class FoloosiPassPlugin: NSObject, FlutterPlugin {
         let channel = FlutterMethodChannel(name: "foloosi_pass", binaryMessenger: registrar.messenger())
         let instance = FoloosiPassPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
+        // Required so iOS forwards application(_:open:) to this plugin when
+        // UAE Pass returns to the app via the configured URL scheme (foloosi://).
+        registrar.addApplicationDelegate(instance)
     }
 
     func getUaePassTokenForCode(code: String) {
