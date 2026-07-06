@@ -17,7 +17,7 @@ A new Flutter project.
   s.dependency 'Flutter'
   s.resources = 'Classes/**/*.xib'
   # Network
-  s.dependency 'Alamofire', '5.4.4'
+  s.dependency 'Alamofire', '~> 5.9.0'
   s.dependency 'ZIPFoundation', '0.9.19'
   s.platform = :ios, '15.0'
 
