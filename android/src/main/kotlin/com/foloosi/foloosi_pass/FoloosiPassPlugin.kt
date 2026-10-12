@@ -181,10 +181,11 @@ class FoloosiPassPlugin :
     }
 
     private fun handleIntent(intent: Intent?) {
-        if (intent != null && intent.data != null) {
-            if (scheme!! == intent.data!!.scheme) {
-                resume(intent.dataString)
-            }
+        val data = intent?.data ?: return
+        // scheme is only set by set_up_environment; other deep links can
+        // arrive before that and must be ignored rather than crash.
+        if (scheme != null && scheme == data.scheme) {
+            resume(intent.dataString)
         }
     }
 
